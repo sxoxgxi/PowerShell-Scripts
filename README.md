@@ -70,12 +70,12 @@ If you don't know xD`WhichMachine` tells whether your machine is a windos, mac o
 `QuizMe` is a terminal-based quiz game that uses the Open Trivia Database API to fetch actual questions and presents them with randomized answer choices.
 
 ## Installation
-To use these functions, you can simply copy and paste them into your PowerShell profile. You can locate your PowerShell profile by typing $PROFILE in a PowerShell prompt.
+To use these functions, you can simply copy and paste them into your PowerShell profile. You can locate your PowerShell profile by typing `$PROFILE` in a PowerShell prompt.
 
 Alternatively, you can clone this repository and import the functions using the Import-Module cmdlet.
 
 ## Usage
-Once you have installed the functions, you can use them in your PowerShell session. To see the available functions, type Get-Command -Module <ModuleName> in the PowerShell prompt, where <ModuleName> is the name of the module containing the functions.
+Once you have installed the functions, you can use them in your PowerShell session. To see the available functions, type `Get-Command -Module <ModuleName>` in the PowerShell prompt, where `<ModuleName>` is the name of the module containing the functions.
 
 ## Contributing
 Feel free to use, modify, or contribute to this repository!
