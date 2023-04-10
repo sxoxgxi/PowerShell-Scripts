@@ -7,6 +7,16 @@ function Rename {
     Rename-Item $args[0] $args[1]
 }
 
+
+function Count {
+    <#
+    .SYNOPSIS
+    Counts number of items in the active directory.
+    #>
+    $items = Get-ChildItem -Path . | Measure-Object
+    Write-Output "$($items.Count) items in the current directory."
+}
+
 function RandomFile{
     <#
     .SYNOPSIS

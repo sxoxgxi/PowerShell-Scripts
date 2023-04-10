@@ -4,6 +4,9 @@ This repository contains a set of PowerShell functions that can be used to make 
 ### Rename
 `Rename` is a simple function that renames a file to your choice of name. It takes two arguments: the file to be renamed and the new name of the file.
 
+### Count
+`Count` is a function that allows you to count the number of files in the active directory.
+
 ### RandomFile
 RandomFile serves a random file from the working directory. This function is particularly useful when you want to take a break from work and do something random. When run, it selects a random file from the current directory and prompts you to either open the file or return the name of the file.
 

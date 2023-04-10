@@ -1,7 +1,7 @@
 $UserDataFile = "$HOME/guessNumberScores.json"
 $MinNumber = 1
 $MaxNumber = 100
-$MaxGuesses = 5
+$MaxGuesses = 10
 
 function Get-RandomNumber {
     return Get-Random -Minimum $MinNumber -Maximum $MaxNumber
@@ -84,8 +84,8 @@ else {
 }
 $Score = Play-Round
 Write-Host `n'Your score is' $Score
+Update-Score $Username $Score
 Write-Host (' ' * $position + "Following are top scores by the players:")
 Get-Scores
-Update-Score $Username $Score
 # Get-Scores
 
