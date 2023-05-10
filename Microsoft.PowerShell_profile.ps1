@@ -17,7 +17,26 @@ function Count {
     Write-Output "$($items.Count) items in the current directory."
 }
 
-function RandomFile{
+function Size {
+    <#
+    .SYNOPSIS
+    Shows the total size taken by the active directory.
+    #>
+    $dir = Get-ChildItem -Path $PWD -Recurse -Force | Where-Object { !$_.PSIsContainer }
+    $size = ($dir | Measure-Object -Property Length -Sum).Sum
+    $size = [double]$size
+    $suffixes = "B", "KB", "MB", "GB", "TB"
+    $index = 0
+    while ($size -ge 1024 -and $index -lt ($suffixes.Length - 1)) {
+        $size /= 1024
+        $index++
+    }
+    $size = "{0:N2}" -f $size
+    $unit = $suffixes[$index]
+    Write-Output "Total size of $PWD is $size $unit"
+}
+
+function RandomFile {
     <#
     .SYNOPSIS
     Serves a random file from the working directory.
@@ -31,14 +50,14 @@ function RandomFile{
     $file = Get-Random(Get-Childitem)
     Write-Verbose "Selected file: $file"
     $validInput = $false
-    do{
+    do {
         $choice = Read-Host -Prompt "Do you want to open the file (y/n)"
-        switch($choice){
-            y {if(Test-Path $file){start "$file" -WhatIf:$WhatIf; $validInput = $true}}
-            n {$validInput = $true; Write-Output "$file"}
-            default {Write-Output "Invalid choice. Please try again.`n"}
+        switch ($choice) {
+            y { if (Test-Path $file) { start "$file" -WhatIf:$WhatIf; $validInput = $true } }
+            n { $validInput = $true; Write-Output "$file" }
+            default { Write-Output "Invalid choice. Please try again.`n" }
         }
-    }while(-not $validInput)
+    }while (-not $validInput)
 }
 
 function UwU {
@@ -114,7 +133,7 @@ Function Touch {
     
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory=$True, Position=0)]
+        [Parameter(Mandatory = $True, Position = 0)]
         [ValidateNotNullOrEmpty()]
         [String]$Name
     )
@@ -131,10 +150,10 @@ function RandomPass {
 
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory = $false)]
         [int]$length = 12
     )
-    $password = -join(48..57+65..90+97..122|ForEach-Object{[char]$_}|Get-Random -C $length)
+    $password = -join (48..57 + 65..90 + 97..122 | ForEach-Object { [char]$_ } | Get-Random -C $length)
     $password | clip;
     
     Write-Output "Your new password is: $password. It has been copied to the clipboard.";
@@ -188,7 +207,7 @@ function ServeFile {
 
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$FilePath
     )
 
@@ -228,7 +247,7 @@ function Df {
     Just a alias.
     #>
 
-	get-volume
+    get-volume
 }
 
 function Env {
@@ -246,7 +265,7 @@ function Which($name) {
     Imitation of linux command "Which"
     #>
 
-	Get-Command $name | Select-Object -ExpandProperty Definition
+    Get-Command $name | Select-Object -ExpandProperty Definition
 }
 
 function ReloadProfile {
@@ -272,12 +291,13 @@ function FindFile($name) {
     .SYNOPSIS
     Aids in finding the a specific file.
     #>
-    if ($name -ne $null){
+    if ($name -ne $null) {
         get-childitem -recurse -filter "*${name}*" -ErrorAction SilentlyContinue | foreach-object {
             write-output($PSItem.FullName)
 
-    }}
-    else{
+        }
+    }
+    else {
         Write-Output "Please provide a file name."
     }
 }
@@ -295,21 +315,23 @@ function DriveStatus {
 
     $psdrive = Get-PSDrive $drive
     if ($psdrive -and $psdrive.Provider.Name -eq 'FileSystem' -and $psdrive.Root -ne $null) {
-        $freeSpace = [math]::Round($psdrive.Free/1GB)
-        $totalSpace = [math]::Round($psdrive.Used/1GB + $psdrive.Free/1GB)
-        $percentFree = [math]::Round(($freeSpace/$totalSpace)*100)
+        $freeSpace = [math]::Round($psdrive.Free / 1GB)
+        $totalSpace = [math]::Round($psdrive.Used / 1GB + $psdrive.Free / 1GB)
+        $percentFree = [math]::Round(($freeSpace / $totalSpace) * 100)
 
         if ($percentFree -lt $threshold) {
             $title = "Low Disk Space Alert on $computer"
             $message = "The free space on drive $drive is less than $threshold%. Current free space: $freeSpace GB"
             Write-Output "$title`n$message"
-        } else {
+        }
+        else {
             $title = "Disk Space Status on $computer"
             $message = "The free space on drive $drive is currently at $percentFree%. Current free space: $freeSpace GB"
             Write-Output "$title`n$message"
 
         }
-    } else {
+    }
+    else {
         Write-Output "Drive $drive is not available or not a file system drive."
     }
 }
@@ -324,13 +346,13 @@ function AvailableCommands {
     $functionNames = [regex]::Matches($fileContent, '\bfunction\s+(\w+)') | ForEach-Object { $_.Groups[1].Value }
     Write-Host "Available commands are:"
     foreach ($func in $functionNames) {
-    $i++
-    Write-Host "$i. -> $func"
+        $i++
+        Write-Host "$i. -> $func"
     
     }
 }
 
-function GuessNumber{
+function GuessNumber {
     <#
     .SYNOPSIS
     Imports the module  and initialize the game.
@@ -375,13 +397,13 @@ function Get-RandomCategory {
 
     $randomCategory = $categories | Get-Random
     return @{
-        id = $randomCategory.id
+        id   = $randomCategory.id
         name = $randomCategory.name
     }
 }
 
 
-function QuizMe{
+function QuizMe {
     <#
     .SYNOPSIS
     A terminal Quiz game with actual questions.
@@ -399,8 +421,8 @@ function QuizMe{
         $answers = $q.incorrect_answers + $q.correct_answer
         $answers = $answers | Get-Random -Count $answers.Count
         @{
-            Question = $q.question
-            Answers = $answers
+            Question      = $q.question
+            Answers       = $answers
             CorrectAnswer = $q.correct_answer
         }
     }
@@ -425,7 +447,8 @@ function QuizMe{
                 Start-Sleep -Seconds 1
                 $countdown--
             }
-        } else {
+        }
+        else {
             Write-Host "Incorrect. The correct answer is $($q.CorrectAnswer)." -ForegroundColor Red
             while ($countdown -ge 0) {
                 Write-Host -NoNewline "Next question in: $countdown seconds`r"
@@ -438,4 +461,27 @@ function QuizMe{
         
     }
     Write-Host "`nYou scored $($score) out of $($quiz.Count)." -ForegroundColor Cyan
+}
+
+function CheckInternet {
+    $spotifyURI = "0EX7aOUwiavTRmYmMefCJ5"
+    $ping = New-Object System.Net.NetworkInformation.Ping
+    $lastCheckedTime = Get-Date
+
+    while ($true) {
+        try {
+            $result = $ping.Send("www.google.com")
+            if ($result.Status -eq "Success") {
+                Write-Host "Internet connection detected." -ForegroundColor Green
+                Start-Process "spotify:track:$spotifyURI"
+                break
+            }
+        }
+        catch {
+            $timepassed = (Get-Date) - $lastCheckedTime
+            Write-Host -NoNewline "No internet connection: $($timepassed.ToString("mm':'ss"))`r" -ForegroundColor Red
+        }
+        Start-Sleep -Seconds 1
+    }
+    Write-Host "Exiting CheckInternet function." -ForegroundColor Cyan
 }
